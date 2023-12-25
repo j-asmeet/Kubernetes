@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+        - name: app2
+          image: "us-central1-docker.pkg.dev/advcloud-402315/app2/app2-image"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5001
+          volumeMounts:
+            - name: kube-storage
+              mountPath: /jasmeet_PV_dir
+
+      volumes:
+        - name: kube-storage
+          persistentVolumeClaim:
+            claimName: my-pv

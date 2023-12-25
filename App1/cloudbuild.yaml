@@ -1,0 +1,29 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    id: build-image-id
+    args:
+      - "build"
+      - "-t"
+      - "us-central1-docker.pkg.dev/advcloud-402315/app1/app1-image"
+      - "."
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-image-id
+    args: 
+      - "push"
+      - "us-central1-docker.pkg.dev/advcloud-402315/app1/app1-image"
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "set",
+        "image",
+        "deployment/pod-1",
+        "app1=us-central1-docker.pkg.dev/advcloud-402315/app1/app1-image",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=cloud-assignment-cluster"
+  - name: "gcr.io/cloud-builders/kubectl"
+    args: ["rollout", "restart", "deployment/pod-1"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=cloud-assignment-cluster"
